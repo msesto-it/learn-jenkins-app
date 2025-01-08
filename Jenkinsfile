@@ -22,14 +22,17 @@ pipeline {
         }
 
         stage('Test') {
-            // agent {
-            //     docker {
-            //         image 'node:18-alpine'
-            //         reuseNode true
-            //     }
-            // }
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                    reuseNode true
+                }
+            }
             steps {
-                sh 'test -f build/index.html'  // checks to see if index.html exists in build
+                sh '''
+                test -f build/index.html'
+                npm test
+                '''
             }
         }
     }
