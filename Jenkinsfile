@@ -2,9 +2,6 @@ pipeline {
     agent any
 
     stages {
-        always {
-            cleanWs() // Clean workspace before each stage
-        }
         /*
         stage('Build') {
             agent {
@@ -61,6 +58,7 @@ pipeline {
     post {
         always {
             junit 'jest-results/junit.xml' // Archive JUnit test results
+            cleanWs() // Clean workspace after each stage
         }
     }
 }
