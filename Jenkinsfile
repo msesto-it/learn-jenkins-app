@@ -2,6 +2,7 @@ pipeline {
     agent any
 
     stages {
+        /*
         stage('Build') {
             agent {
                 docker {
@@ -19,7 +20,7 @@ pipeline {
                     ls -la #List files in the current directory
                 '''
             }
-        } 
+        } */
 
         stage('Tests') {
             agent {
