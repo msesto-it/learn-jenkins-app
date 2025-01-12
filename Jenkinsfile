@@ -58,6 +58,7 @@ pipeline {
     post {
         always {
             junit 'jest-results/junit.xml' // Archive JUnit test results
+            cleanWS() // Clean up workspace
         }
     }
 }
