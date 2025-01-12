@@ -46,7 +46,7 @@ pipeline {
             }
             steps {
                 sh '''
-                npm install serve #Install serve Locally
+                npm install serve
                 npn audit
                 workspaces/learn-jenkins-app/node_modules/serve -s build
                 npx playwright test
