@@ -1,7 +1,7 @@
 pipeline {
     agent any
     
-    options {
+    /*options {
         disableConcurrentBuilds() // Prevent concurrent builds
     }
 
@@ -10,7 +10,7 @@ pipeline {
             steps {
                 deleteDir() // Delete the workspace before starting the build
             }
-        }
+        } /*
         /*
         stage('Build') {
             agent {
