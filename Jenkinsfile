@@ -12,7 +12,7 @@ pipeline {
             }
         }*/
         
-        stage('Build') {
+        /*stage('Build') {
             agent {
                 docker {
                     image 'node:18-alpine'
@@ -29,7 +29,7 @@ pipeline {
                     ls -la #List files in the current directory
                 '''
             }
-        }
+        }*/
 
         stage('Tests') {
             agent {
