@@ -56,7 +56,7 @@ pipeline {
             steps {
                 sh '''
                 npm install serve
-                node_modules/serve -s build & #Start the server in the background
+                node_modules/.bin/serve -s build & #Start the server in the background
                 sleep 10 #Wait for the server to start
                 npx playwright test #Run Playwright tests
                 '''
