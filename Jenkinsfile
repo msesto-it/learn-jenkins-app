@@ -47,8 +47,7 @@ pipeline {
             steps {
                 sh '''
                 npm install serve
-                npn audit
-                workspaces/learn-jenkins-app/node_modules/serve -s build
+                workspaces/learn-jenkins-app/node_modules/serve -s build & #Start the server in the background
                 npx playwright test
                 '''
             }
