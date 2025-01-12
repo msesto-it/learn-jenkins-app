@@ -48,7 +48,8 @@ pipeline {
                 sh '''
                 npm install serve
                 workspaces/learn-jenkins-app/node_modules/serve -s build & #Start the server in the background
-                npx playwright test
+                sleep 10 #Wait for the server to start
+                npx playwright test #Run Playwright tests
                 '''
             }
         }
@@ -56,7 +57,7 @@ pipeline {
     }
     post {
         always {
-            junit 'test-results/junit.xml' // Archive JUnit test results
+            junit 'jest-results/junit.xml' // Archive JUnit test results
         }
     }
 }
