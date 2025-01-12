@@ -36,7 +36,7 @@ pipeline {
             }
         }
         /*
-                stage('E2E') {
+        stage('E2E') {
             agent {
                 docker {
                     image 'mcr.microsoft.com/playwright:v1.49.1-noble'
@@ -51,6 +51,7 @@ pipeline {
                 '''
             }
         }
+        */
     }
     post {
         always {
@@ -58,4 +59,3 @@ pipeline {
         }
     }
 }
-*/
