@@ -66,7 +66,7 @@ pipeline {
     }
     post {
         always {
-            junit 'test-results/junit.xml' // Archive JUnit test results
+            junit 'jest-results/junit.xml' // Archive JUnit test results
             cleanWs() // Clean workspace after each stage
         }
         success {
