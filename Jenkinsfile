@@ -1,5 +1,9 @@
 pipeline {
     agent any
+    
+    options {
+        disableConcurrentBuilds() // Prevent concurrent builds
+    }
 
     stages {
         stage('Clean Workspace') {
