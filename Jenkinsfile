@@ -69,5 +69,11 @@ pipeline {
             junit 'jest-results/junit.xml' // Archive JUnit test results
             cleanWs() // Clean workspace after each stage
         }
+        success {
+            echo "Pipeline completed successfully!"
+        }
+        failure {
+            echo "Pipeline failed!"
+        }
     }
 }
