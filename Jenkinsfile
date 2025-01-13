@@ -1,10 +1,8 @@
 pipeline {
-    agent any
-    
+    agent any  
     /*options {
         disableConcurrentBuilds() // Prevent concurrent builds
     }*/
-
     stages {
         /*stage('Clean Workspace') {
             steps {
@@ -12,7 +10,7 @@ pipeline {
             }
         }*/
         
-        /*stage('Build') {
+        stage('Build') {
             agent {
                 docker {
                     image 'node:18-alpine'
@@ -29,7 +27,7 @@ pipeline {
                     ls -la #List files in the current directory
                 '''
             }
-        }*/
+        }
 
         stage ('Tests') {
             parallel {
@@ -87,6 +85,29 @@ pipeline {
                     }
                 }
             }
-        }  
+        }
+
+        stage('Deploy') {
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                    reuseNode true
+                }
+            }
+            steps {
+                sh '''
+                    npm install netlify-cli -g
+                    netifly --version
+                '''
+            }
+            post {
+                success {
+                    echo 'Deploy Stage successfully'
+                }
+                failure {
+                    echo 'Deploy Stage failed'
+                }
+            }
+        }
     }
 }
