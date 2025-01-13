@@ -12,7 +12,7 @@ pipeline {
             }
         }*/
         
-        /*stage('Build') {
+        stage('Build') {
             agent {
                 docker {
                     image 'node:18-alpine'
@@ -29,7 +29,7 @@ pipeline {
                     ls -la #List files in the current directory
                 '''
             }
-        }*/
+        }
 
         stage('Tests') {
             agent {
@@ -66,7 +66,7 @@ pipeline {
     }
     post {
         always {
-            junit 'jest-results/junit.xml' // Archive JUnit test results
+            junit 'test-results/junit.xml' // Archive JUnit test results
         }
         success {
             echo "Pipeline completed successfully!"
