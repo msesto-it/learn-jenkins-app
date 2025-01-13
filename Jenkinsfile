@@ -12,7 +12,7 @@ pipeline {
             }
         }*/
         
-        stage('Build') {
+        /*stage('Build') {
             agent {
                 docker {
                     image 'node:18-alpine'
@@ -29,7 +29,7 @@ pipeline {
                     ls -la #List files in the current directory
                 '''
             }
-        }
+        }*/
 
         stage('Tests') {
             agent {
@@ -58,7 +58,7 @@ pipeline {
                 npm install serve
                 node_modules/.bin/serve -s build & #Start the server in the background
                 sleep 10 #Wait for the server to start
-                npx playwright test --reporterhtml #Run Playwright tests
+                npx playwright test --reporter=html #Run Playwright tests
                 '''
             }
         }
