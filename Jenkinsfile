@@ -31,35 +31,39 @@ pipeline {
             }
         }*/
 
-        stage('Tests') {
-            agent {
-                docker {
-                    image 'node:18-alpine'
-                    reuseNode true
+        stage ('Tests') {
+            parallel {
+                stage('Unit Tests') {
+                    agent {
+                        docker {
+                            image 'node:18-alpine'
+                            reuseNode true
+                        }
+                    }
+                    steps {
+                        sh '''
+                        test -f build/index.html
+                        npm test
+                        '''
+                    }
                 }
-            }
-            steps {
-                sh '''
-                test -f build/index.html
-                npm test
-                '''
-            }
-        }
-        
-        stage('E2E') {
-            agent {
-                docker {
-                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
-                    reuseNode true
+                
+                stage('E2E') {
+                    agent {
+                        docker {
+                            image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                            reuseNode true
+                        }
+                    }
+                    steps {
+                        sh '''
+                        npm install serve
+                        node_modules/.bin/serve -s build & #Start the server in the background
+                        sleep 10 #Wait for the server to start
+                        npx playwright test --reporter=html #Run Playwright tests
+                        '''
+                    }
                 }
-            }
-            steps {
-                sh '''
-                npm install serve
-                node_modules/.bin/serve -s build & #Start the server in the background
-                sleep 10 #Wait for the server to start
-                npx playwright test --reporter=html #Run Playwright tests
-                '''
             }
         }
         
