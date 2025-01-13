@@ -46,6 +46,11 @@ pipeline {
                         npm test
                         '''
                     }
+                    post {
+                        always {
+                            junit 'jest-results/junit.xml' // Archive JUnit test results
+                        }
+                    }
                 }
                 
                 stage('E2E') {
@@ -63,6 +68,11 @@ pipeline {
                         npx playwright test --reporter=html #Run Playwright tests
                         '''
                     }
+                    post {
+                        always {
+                            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+                        }
+                    }
                 }
             }
         }
@@ -70,14 +80,11 @@ pipeline {
     }
     post {
         always {
-            junit 'jest-results/junit.xml' // Archive JUnit test results
-            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright HTML Report', reportTitles: '', useWrapperFileDirectly: true])
-        }
-        success {
-            echo "Pipeline completed successfully!"
-        }
-        failure {
-            echo "Pipeline failed!"
+            success {
+                echo "Pipeline completed successfully!"
+            }
+            failure {
+                echo "Pipeline failed!"
+            }
         }
     }
-}
