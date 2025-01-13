@@ -79,10 +79,10 @@ pipeline {
                             publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright HTML Report', reportTitles: '', useWrapperFileDirectly: true])  
                         }
                         success {
-                            echo 'Unit tests passed'
+                            echo 'E2E tests passed'
                         }
                         failure {
-                            echo 'Unit tests failed'
+                            echo 'E2E tests failed'
                         }
                     }
                 }
