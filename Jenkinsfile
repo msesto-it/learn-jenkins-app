@@ -49,12 +49,12 @@ pipeline {
                     post {
                         always {
                             junit 'jest-results/junit.xml' // Archive JUnit test results
-                            success {
-                                echo 'Unit tests passed'
-                            }
-                            failure {
-                                echo 'Unit tests failed'
-                            }
+                        }
+                        success {
+                            echo 'Unit tests passed'
+                        }
+                        failure {
+                            echo 'Unit tests failed'
                         }
                     }
                 }
@@ -76,13 +76,13 @@ pipeline {
                     }
                     post {
                         always {
-                            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright HTML Report', reportTitles: '', useWrapperFileDirectly: true])
-                            success {
-                                echo 'E2E tests passed'
-                            }
-                            failure {
-                                echo 'E2E tests failed'
-                            }   
+                            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright HTML Report', reportTitles: '', useWrapperFileDirectly: true])  
+                        }
+                        success {
+                            echo 'Unit tests passed'
+                        }
+                        failure {
+                            echo 'Unit tests failed'
                         }
                     }
                 }
