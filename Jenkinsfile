@@ -104,7 +104,7 @@ pipeline {
             }
             post {
                 success {
-                    echo 'Deploy Stage successfully to site ID: $NETLIFY_SITE_ID'
+                    echo 'Deploy Stage successfully to site ID: "$NETLIFY_SITE_ID"'
                 }
                 failure {
                     echo 'Deploy Stage failed'
