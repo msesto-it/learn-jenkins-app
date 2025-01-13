@@ -1,8 +1,10 @@
 pipeline {
-    agent any  
-    /*options {
-        disableConcurrentBuilds() // Prevent concurrent builds
-    }*/
+    agent any 
+
+    environment {
+        NETLIFY_SITE_ID = '1607d98c-5f48-46ed-ae1f-215def91dd4e'
+    }
+
     stages {
         /*stage('Clean Workspace') {
             steps {
@@ -102,7 +104,7 @@ pipeline {
             }
             post {
                 success {
-                    echo 'Deploy Stage successfully'
+                    echo 'Deploy Stage successfully to site ID: $NETLIFY_SITE_ID'
                 }
                 failure {
                     echo 'Deploy Stage failed'
