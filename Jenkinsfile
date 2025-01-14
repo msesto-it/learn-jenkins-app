@@ -100,10 +100,11 @@ pipeline {
             }
             steps {
                 sh '''
-                    npm install netlify-cli #Install Netlify CLI
+                    npm install netlify-cli node-jq #Install Netlify CLI
                     node_modules/.bin/netlify --version
                     node_modules/.bin/netlify status
-                    node_modules/.bin/netlify deploy --dir=build --json #If you dont put "--prod" it will deploy to staging
+                    node_modules/.bin/netlify deploy --dir=build --json > deploy-output.json #If you dont put "--prod" it will deploy to staging
+                    node_modules/.bin/node-jq -r '.deploy_url' deploy-output.json #Get the deploy URL from the JSON output and store it in the file
                 '''
             }
             post {
