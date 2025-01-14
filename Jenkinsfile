@@ -90,6 +90,7 @@ pipeline {
             }
         }
 
+//Deploy to staging using Netlify
         stage('Deploy Staging') {
             agent {
                 docker {
@@ -115,12 +116,14 @@ pipeline {
             }
         }
 
+// Approve stage. This will pause the pipeline and wait for user input to proceed
         stage ('Approve Deployment') {
             steps {
                 input message: 'Do you wish to deploy to Production?', ok: 'Yes, I am sure!'
             }
         }
 
+//Deploy to production using Netlify
         stage('Deploy Prod') {
             agent {
                 docker {
@@ -146,6 +149,7 @@ pipeline {
             }
         }
 
+// Run E2E tests on the production environment
         stage('PROD E2E') {
             agent {
                 docker {
