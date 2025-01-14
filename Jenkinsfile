@@ -103,7 +103,7 @@ pipeline {
                     npm install netlify-cli #Install Netlify CLI
                     node_modules/.bin/netlify --version
                     node_modules/.bin/netlify status
-                    node_modules/.bin/netlify deploy --dir=build #If you dont put "--prod" it will deploy to staging
+                    node_modules/.bin/netlify deploy --dir=build --json #If you dont put "--prod" it will deploy to staging
                 '''
             }
             post {
