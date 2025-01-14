@@ -90,7 +90,7 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
+        stage('Deploy Staging') {
             agent {
                 docker {
                     image 'node:18-alpine'
@@ -99,7 +99,38 @@ pipeline {
             }
             steps {
                 sh '''
-                    npm install netlify-cli
+                    npm install netlify-cli #Install Netlify CLI
+                    node_modules/.bin/netlify --version
+                    node_modules/.bin/netlify status
+                    node_modules/.bin/netlify deploy --dir=build #If you dont put "--prod" it will deploy to staging
+                '''
+            }
+            post {
+                success {
+                    echo "Deploy Stage to Staging Env successfull to site ID: $NETLIFY_SITE_ID"
+                }
+                failure {
+                    echo 'Deploy Stage to Staging failed'
+                }
+            }
+        }
+
+        stage ('Approve Deployment') {
+            steps {
+                input message: 'Do you wish to deploy to Production?', ok: 'Yes, I am sure!'
+            }
+        }
+
+        stage('Deploy Prod') {
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                    reuseNode true
+                }
+            }
+            steps {
+                sh '''
+                    npm install netlify-cli #Install Netlify CLI locally
                     node_modules/.bin/netlify --version
                     node_modules/.bin/netlify status
                     node_modules/.bin/netlify deploy --dir=build --prod
@@ -107,10 +138,10 @@ pipeline {
             }
             post {
                 success {
-                    echo "Deploy Stage successfully to site ID: $NETLIFY_SITE_ID"
+                    echo "Deploy Stage to PROD successfull to site ID: $NETLIFY_SITE_ID"
                 }
                 failure {
-                    echo 'Deploy Stage failed'
+                    echo 'Deploy Stage to PROD failed'
                 }
             }
         }
