@@ -98,17 +98,18 @@ pipeline {
                     reuseNode true
                 }
             }
-            steps {
+            steps { 
                 sh '''
                     npm install netlify-cli node-jq #Install Netlify CLI
                     node_modules/.bin/netlify --version
                     node_modules/.bin/netlify status
                     node_modules/.bin/netlify deploy --dir=build --json > deploy-output.json #If you dont put "--prod" it will deploy to staging
                 '''
+                script{
+                    env.STAGING_URL = sh(script: "node_modules/.bin/node-jq -r '.deploy_url' deploy-output.json", returnStdout: true)
+                }
             }
-            script{
-                env.STAGING_URL = sh(script: "node_modules/.bin/node-jq -r '.deploy_url' deploy-output.json", returnStdout: true)
-            }
+
             post {
                 success {
                     echo "Deploy Stage to Staging Env successfull to site ID: $NETLIFY_SITE_ID"
