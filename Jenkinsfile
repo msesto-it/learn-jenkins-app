@@ -108,7 +108,7 @@ pipeline {
                 netlify --version
                 netlify status
                 netlify deploy --dir=build --json > deploy-output.json #If you dont put "--prod" it will deploy to staging
-                CI_ENVIRONMENT_URL=$(node_modules/.bin/node-jq -r '.deploy_url' deploy-output.json)
+                CI_ENVIRONMENT_URL=$(node-jq -r '.deploy_url' deploy-output.json)
                 npx playwright test --reporter=html #Run Playwright tests
                 '''
             }
