@@ -6,14 +6,16 @@ pipeline {
         NETLIFY_AUTH_TOKEN = credentials('netlify-token') // Use the Netlify token stored in Jenkins credentials
     }
 
+// Build docker image for Playwright
     stages {
-        /*stage('Clean Workspace') {
+        stage('Docker Build') {
             steps {
-                deleteDir() // Delete the workspace before starting the build
+                sh 'docker build -t my-playwright .'
             }
-        }*/
-        
-        /*stage('Build') {
+        }
+
+// Build Stage
+        stage('Build') {
             agent {
                 docker {
                     image 'node:18-alpine'
@@ -30,7 +32,7 @@ pipeline {
                     ls -la #List files in the current directory
                 '''
             }
-        }*/
+        }
 
         stage ('Tests') {
             parallel {
@@ -63,14 +65,13 @@ pipeline {
                 stage('E2E') {
                     agent {
                         docker {
-                            image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                            image 'my-playwright'
                             reuseNode true
                         }
                     }
                     steps {
                         sh '''
-                        npm install serve
-                        node_modules/.bin/serve -s build & #Start the server in the background
+                        serve -s build & #Start the server in the background
                         sleep 10 #Wait for the server to start
                         npx playwright test --reporter=html #Run Playwright tests
                         '''
@@ -94,7 +95,7 @@ pipeline {
         stage('Deploy Staging') {
             agent {
                 docker {
-                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                    image 'my-playwright'
                     reuseNode true
                 }
             }
@@ -104,10 +105,9 @@ pipeline {
                 }
             steps {
                 sh '''
-                npm install netlify-cli node-jq #Install Netlify CLI
-                node_modules/.bin/netlify --version
-                node_modules/.bin/netlify status
-                node_modules/.bin/netlify deploy --dir=build --json > deploy-output.json #If you dont put "--prod" it will deploy to staging
+                netlify --version
+                netlify status
+                netlify deploy --dir=build --json > deploy-output.json #If you dont put "--prod" it will deploy to staging
                 CI_ENVIRONMENT_URL=$(node_modules/.bin/node-jq -r '.deploy_url' deploy-output.json)
                 npx playwright test --reporter=html #Run Playwright tests
                 '''
@@ -147,10 +147,9 @@ pipeline {
             steps {
                 sh '''
                 node --version #Print the Node.js version which is inbuilt in playwright image
-                npm install netlify-cli #Install Netlify CLI locally
-                node_modules/.bin/netlify --version
-                node_modules/.bin/netlify status
-                node_modules/.bin/netlify deploy --dir=build --prod
+                netlify --version
+                netlify status
+                netlify deploy --dir=build --prod
                 npx playwright test --reporter=html #Run Playwright tests
                 '''
             }
