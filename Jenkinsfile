@@ -128,7 +128,9 @@ pipeline {
 // Approve stage. This will pause the pipeline and wait for user input to proceed
         stage ('Approve Deployment') {
             steps {
-                input message: 'Do you wish to deploy to Production?', ok: 'Yes, I am sure!'
+                timeout(time: 5, unit: 'MINUTES') {
+                    input message: 'Do you wish to deploy to Production?', ok: 'Yes, I am sure!'
+                }
             }
         }
 
