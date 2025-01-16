@@ -6,7 +6,7 @@ pipeline {
         NETLIFY_AUTH_TOKEN = credentials('netlify-token') // Use the Netlify token stored in Jenkins credentials
     }
 
-// Build docker image for Playwright
+// Build docker image for Playwright we can isolate this into a new file to run during the early hours of the day
     stages {
         stage('Docker Build') {
             steps {
