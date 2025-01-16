@@ -90,37 +90,8 @@ pipeline {
             }
         }
 
-//Deploy to staging using Netlify
+//Merged Deploy Staging to Staging E2EDeploy to staging using Netlify
         stage('Deploy Staging') {
-            agent {
-                docker {
-                    image 'node:18-alpine'
-                    reuseNode true
-                }
-            }
-            steps { 
-                sh '''
-                    npm install netlify-cli node-jq #Install Netlify CLI
-                    node_modules/.bin/netlify --version
-                    node_modules/.bin/netlify status
-                    node_modules/.bin/netlify deploy --dir=build --json > deploy-output.json #If you dont put "--prod" it will deploy to staging
-                '''
-                script{
-                    env.STAGING_URL = sh(script: "node_modules/.bin/node-jq -r '.deploy_url' deploy-output.json", returnStdout: true)
-                }
-            }
-
-            post {
-                success {
-                    echo "Deploy Stage to Staging Env successfull to site ID: $NETLIFY_SITE_ID"
-                }
-                failure {
-                    echo 'Deploy Stage to Staging failed'
-                }
-            }
-        }
-
-        stage('Staging E2E') {
             agent {
                 docker {
                     image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
@@ -133,6 +104,11 @@ pipeline {
                 }
             steps {
                 sh '''
+                npm install netlify-cli node-jq #Install Netlify CLI
+                node_modules/.bin/netlify --version
+                node_modules/.bin/netlify status
+                node_modules/.bin/netlify deploy --dir=build --json > deploy-output.json #If you dont put "--prod" it will deploy to staging
+                CI_ENVIRONMENT_URL=$(node_modules/.bin/node-jq -r '.deploy_url' deploy-output.json)
                 npx playwright test --reporter=html #Run Playwright tests
                 '''
             }
@@ -141,10 +117,10 @@ pipeline {
                     publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright E2E Staging Report', reportTitles: '', useWrapperFileDirectly: true]) 
                 }
                 success {
-                    echo 'PROD E2E tests passed'
+                    echo "Staging Deploy successfull to site ID: $NETLIFY_SITE_ID"
                 }
                 failure {
-                    echo 'PROD E2E tests failed'
+                    echo 'Staging Deploy failed'
                 }
             }
         }
@@ -156,34 +132,8 @@ pipeline {
             }
         }
 
-//Deploy to production using Netlify
+// Merged Deploy Prd with Prd E2E, Run E2E tests on the production environment
         stage('Deploy Prod') {
-            agent {
-                docker {
-                    image 'node:18-alpine'
-                    reuseNode true
-                }
-            }
-            steps {
-                sh '''
-                    npm install netlify-cli #Install Netlify CLI locally
-                    node_modules/.bin/netlify --version
-                    node_modules/.bin/netlify status
-                    node_modules/.bin/netlify deploy --dir=build --prod
-                '''
-            }
-            post {
-                success {
-                    echo "Deploy Stage to PROD successfull to site ID: $NETLIFY_SITE_ID"
-                }
-                failure {
-                    echo 'Deploy Stage to PROD failed'
-                }
-            }
-        }
-
-// Run E2E tests on the production environment
-        stage('PROD E2E') {
             agent {
                 docker {
                     image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
@@ -196,6 +146,11 @@ pipeline {
                 }
             steps {
                 sh '''
+                node --version #Print the Node.js version which is inbuilt in playwright image
+                npm install netlify-cli #Install Netlify CLI locally
+                node_modules/.bin/netlify --version
+                node_modules/.bin/netlify status
+                node_modules/.bin/netlify deploy --dir=build --prod
                 npx playwright test --reporter=html #Run Playwright tests
                 '''
             }
