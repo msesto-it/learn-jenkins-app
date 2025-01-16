@@ -51,7 +51,7 @@ pipeline {
                     }
                     post {
                         always {
-                            junit 'jest-results/junit.xml' // Archive JUnit test results
+                            junit 'test-results/junit.xml' // Archive JUnit test results
                         }
                         success {
                             echo 'Unit tests passed'
@@ -136,7 +136,7 @@ pipeline {
         stage('Deploy Prod') {
             agent {
                 docker {
-                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                    image 'my-playwright'
                     reuseNode true
                 }
             }
