@@ -22,7 +22,7 @@ pipeline {
                     sh '''
                         aws --version
                         echo "Hello, AWS!" > testo.txt #Create a file
-                        aws s3 cp testo.txt s3://learn-jenkins-19012025 /testo.txt #Upload the file to S3
+                        aws s3 cp testo.txt s3://learn-jenkins-19012025/testo.txt #Upload the file to S3
                     '''
                 }
             }
