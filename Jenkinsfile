@@ -6,8 +6,28 @@ pipeline {
         NETLIFY_AUTH_TOKEN = credentials('netlify-token') // Use the Netlify token stored in Jenkins credentials
     }
 
-// Build docker image for Playwright we can isolate this into a new file to run during the early hours of the day
     stages {
+
+// Create an AWS stage
+        stage('AWS') {
+            agent {
+                docker {
+                    image 'amazon/aws-cli'
+                    args "--entrypoint=''"
+                    reuseNode true
+                }
+            }
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'my-aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
+                    sh '''
+                        aws --version
+                        aws s3 ls #List all the S3 buckets
+                    '''
+                }
+            }
+        }
+
+// Build docker image for Playwright we can isolate this into a new file to run during the early hours of the day
         stage('Docker Build') {
             steps {
                 sh 'docker build -t my-playwright .'
