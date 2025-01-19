@@ -8,29 +8,6 @@ pipeline {
 
     stages {
 
-// Create an AWS stage
-        stage('AWS') {
-            agent {
-                docker {
-                    image 'amazon/aws-cli'
-                    args "--entrypoint=''"
-                    reuseNode true
-                }
-            }
-            environment {
-                MY_BUCKET = 'learn-jenkins-19012025'
-                }
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'my-aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
-                    sh '''
-                        aws --version
-                        echo "Hello, AWS!" > index.html #Create a file
-                        aws s3 cp index.html s3://$MY_BUCKET/index.html #Upload the file to S3
-                    '''
-                }
-            }
-        }
-
 // Build docker image for Playwright we can isolate this into a new file to run during the early hours of the day
         stage('Docker Build') {
             steps {
@@ -55,6 +32,28 @@ pipeline {
                     npm run build
                     ls -la #List files in the current directory
                 '''
+            }
+        }
+
+// Create an AWS stage
+        stage('AWS') {
+            agent {
+                docker {
+                    image 'amazon/aws-cli'
+                    args "--entrypoint=''"
+                    reuseNode true
+                }
+            }
+            environment {
+                MY_BUCKET = 'learn-jenkins-19012025'
+                }
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'my-aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
+                    sh '''
+                        aws --version
+                        aws s3 sync build s3://$MY_BUCKET
+                    '''
+                }
             }
         }
 
