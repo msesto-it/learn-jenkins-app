@@ -24,8 +24,8 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'my-aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
                     sh '''
                         aws --version
-                        echo "Hello, AWS!" > testo.txt #Create a file
-                        aws s3 cp testo.txt s3://$MY_BUCKET/testo.txt #Upload the file to S3
+                        echo "Hello, AWS!" > index.html #Create a file
+                        aws s3 cp index.html s3://$MY_BUCKET/index.html #Upload the file to S3
                     '''
                 }
             }
